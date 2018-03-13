@@ -1,0 +1,6 @@
+*.db
+.idea/
+docker-tmp/
+vendor/
+build/
+tmp/

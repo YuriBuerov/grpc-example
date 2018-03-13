@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package api;
+
+service Api {
+    rpc ScanIPAddr (ScanIPRequest) returns (ScanIPResponse);
+}
+
+message ScanIPRequest {
+    string ipAddr = 1;
+}
+
+message ScanIPResponse {
+    string domainName = 1;
+}
