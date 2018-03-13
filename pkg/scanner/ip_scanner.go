@@ -17,5 +17,7 @@ func NewIPScanner(logger log.Logger) *IPScanner {
 }
 
 func (s *IPScanner) ScanIPAddr(ctx context.Context, in *api.ScanIPRequest) (*api.ScanIPResponse, error) {
-	return nil, nil
+	var resp api.ScanIPResponse
+
+	return &resp, nil
 }
