@@ -7,9 +7,12 @@ service Api {
 }
 
 message ScanIPRequest {
-    string ipAddr = 1;
+    string domainName = 1;
 }
 
 message ScanIPResponse {
-    string domainName = 1;
+    message ScanIPEntry {
+        string ipAddr = 1;
+    }
+    repeated ScanIPEntry ipAddresses = 1;
 }

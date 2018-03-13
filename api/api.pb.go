@@ -36,7 +36,7 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type ScanIPRequest struct {
-	IpAddr string `protobuf:"bytes,1,opt,name=ipAddr,proto3" json:"ipAddr,omitempty"`
+	DomainName string `protobuf:"bytes,1,opt,name=domainName,proto3" json:"domainName,omitempty"`
 }
 
 func (m *ScanIPRequest) Reset()                    { *m = ScanIPRequest{} }
@@ -44,15 +44,15 @@ func (m *ScanIPRequest) String() string            { return proto.CompactTextStr
 func (*ScanIPRequest) ProtoMessage()               {}
 func (*ScanIPRequest) Descriptor() ([]byte, []int) { return fileDescriptorApi, []int{0} }
 
-func (m *ScanIPRequest) GetIpAddr() string {
+func (m *ScanIPRequest) GetDomainName() string {
 	if m != nil {
-		return m.IpAddr
+		return m.DomainName
 	}
 	return ""
 }
 
 type ScanIPResponse struct {
-	DomainName string `protobuf:"bytes,1,opt,name=domainName,proto3" json:"domainName,omitempty"`
+	IpAddresses []*ScanIPResponse_ScanIPEntry `protobuf:"bytes,1,rep,name=ipAddresses" json:"ipAddresses,omitempty"`
 }
 
 func (m *ScanIPResponse) Reset()                    { *m = ScanIPResponse{} }
@@ -60,9 +60,25 @@ func (m *ScanIPResponse) String() string            { return proto.CompactTextSt
 func (*ScanIPResponse) ProtoMessage()               {}
 func (*ScanIPResponse) Descriptor() ([]byte, []int) { return fileDescriptorApi, []int{1} }
 
-func (m *ScanIPResponse) GetDomainName() string {
+func (m *ScanIPResponse) GetIpAddresses() []*ScanIPResponse_ScanIPEntry {
 	if m != nil {
-		return m.DomainName
+		return m.IpAddresses
+	}
+	return nil
+}
+
+type ScanIPResponse_ScanIPEntry struct {
+	IpAddr string `protobuf:"bytes,1,opt,name=ipAddr,proto3" json:"ipAddr,omitempty"`
+}
+
+func (m *ScanIPResponse_ScanIPEntry) Reset()                    { *m = ScanIPResponse_ScanIPEntry{} }
+func (m *ScanIPResponse_ScanIPEntry) String() string            { return proto.CompactTextString(m) }
+func (*ScanIPResponse_ScanIPEntry) ProtoMessage()               {}
+func (*ScanIPResponse_ScanIPEntry) Descriptor() ([]byte, []int) { return fileDescriptorApi, []int{1, 0} }
+
+func (m *ScanIPResponse_ScanIPEntry) GetIpAddr() string {
+	if m != nil {
+		return m.IpAddr
 	}
 	return ""
 }
@@ -70,6 +86,7 @@ func (m *ScanIPResponse) GetDomainName() string {
 func init() {
 	proto.RegisterType((*ScanIPRequest)(nil), "api.ScanIPRequest")
 	proto.RegisterType((*ScanIPResponse)(nil), "api.ScanIPResponse")
+	proto.RegisterType((*ScanIPResponse_ScanIPEntry)(nil), "api.ScanIPResponse.ScanIPEntry")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -159,11 +176,11 @@ func (m *ScanIPRequest) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.IpAddr) > 0 {
+	if len(m.DomainName) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintApi(dAtA, i, uint64(len(m.IpAddr)))
-		i += copy(dAtA[i:], m.IpAddr)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.DomainName)))
+		i += copy(dAtA[i:], m.DomainName)
 	}
 	return i, nil
 }
@@ -183,11 +200,41 @@ func (m *ScanIPResponse) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.DomainName) > 0 {
+	if len(m.IpAddresses) > 0 {
+		for _, msg := range m.IpAddresses {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintApi(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *ScanIPResponse_ScanIPEntry) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ScanIPResponse_ScanIPEntry) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.IpAddr) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintApi(dAtA, i, uint64(len(m.DomainName)))
-		i += copy(dAtA[i:], m.DomainName)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.IpAddr)))
+		i += copy(dAtA[i:], m.IpAddr)
 	}
 	return i, nil
 }
@@ -222,7 +269,7 @@ func encodeVarintApi(dAtA []byte, offset int, v uint64) int {
 func (m *ScanIPRequest) Size() (n int) {
 	var l int
 	_ = l
-	l = len(m.IpAddr)
+	l = len(m.DomainName)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
@@ -232,7 +279,19 @@ func (m *ScanIPRequest) Size() (n int) {
 func (m *ScanIPResponse) Size() (n int) {
 	var l int
 	_ = l
-	l = len(m.DomainName)
+	if len(m.IpAddresses) > 0 {
+		for _, e := range m.IpAddresses {
+			l = e.Size()
+			n += 1 + l + sovApi(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ScanIPResponse_ScanIPEntry) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.IpAddr)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
@@ -283,7 +342,7 @@ func (m *ScanIPRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IpAddr", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DomainName", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -308,7 +367,7 @@ func (m *ScanIPRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.IpAddr = string(dAtA[iNdEx:postIndex])
+			m.DomainName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -362,7 +421,88 @@ func (m *ScanIPResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DomainName", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field IpAddresses", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IpAddresses = append(m.IpAddresses, &ScanIPResponse_ScanIPEntry{})
+			if err := m.IpAddresses[len(m.IpAddresses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ScanIPResponse_ScanIPEntry) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ScanIPEntry: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ScanIPEntry: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpAddr", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -387,7 +527,7 @@ func (m *ScanIPResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.DomainName = string(dAtA[iNdEx:postIndex])
+			m.IpAddr = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -518,15 +658,18 @@ var (
 func init() { proto.RegisterFile("api.proto", fileDescriptorApi) }
 
 var fileDescriptorApi = []byte{
-	// 159 bytes of a gzipped FileDescriptorProto
+	// 196 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4c, 0x2c, 0xc8, 0xd4,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4e, 0x2c, 0xc8, 0x54, 0x52, 0xe7, 0xe2, 0x0d, 0x4e,
-	0x4e, 0xcc, 0xf3, 0x0c, 0x08, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x12, 0xe3, 0x62, 0xcb,
-	0x2c, 0x70, 0x4c, 0x49, 0x29, 0x92, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0xf2, 0x94, 0x0c,
-	0xb8, 0xf8, 0x60, 0x0a, 0x8b, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x85, 0xe4, 0xb8, 0xb8, 0x52, 0xf2,
-	0x73, 0x13, 0x33, 0xf3, 0xfc, 0x12, 0x73, 0x53, 0xa1, 0xaa, 0x91, 0x44, 0x8c, 0x6c, 0xb8, 0x98,
-	0x1d, 0x0b, 0x32, 0x85, 0x4c, 0xb9, 0xb8, 0x20, 0x1a, 0x41, 0xc6, 0x08, 0x09, 0xe9, 0x81, 0x1c,
-	0x80, 0x62, 0xa5, 0x94, 0x30, 0x8a, 0x18, 0xc4, 0x74, 0x27, 0x81, 0x13, 0x8f, 0xe4, 0x18, 0x2f,
-	0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc6, 0x63, 0x39, 0x86, 0x24, 0x36, 0xb0, 0xb3,
-	0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0xd7, 0xb9, 0xf4, 0x2b, 0xc3, 0x00, 0x00, 0x00,
+	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4e, 0x2c, 0xc8, 0x54, 0xd2, 0xe7, 0xe2, 0x0d, 0x4e,
+	0x4e, 0xcc, 0xf3, 0x0c, 0x08, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x92, 0xe3, 0xe2, 0x4a,
+	0xc9, 0xcf, 0x4d, 0xcc, 0xcc, 0xf3, 0x4b, 0xcc, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c,
+	0x42, 0x12, 0x51, 0xaa, 0xe2, 0xe2, 0x83, 0x69, 0x28, 0x2e, 0xc8, 0xcf, 0x2b, 0x4e, 0x15, 0x72,
+	0xe4, 0xe2, 0xce, 0x2c, 0x70, 0x4c, 0x49, 0x29, 0x4a, 0x2d, 0x2e, 0x4e, 0x2d, 0x96, 0x60, 0x54,
+	0x60, 0xd6, 0xe0, 0x36, 0x92, 0xd7, 0x03, 0x59, 0x84, 0xaa, 0x12, 0xca, 0x75, 0xcd, 0x2b, 0x29,
+	0xaa, 0x0c, 0x42, 0xd6, 0x23, 0xa5, 0xca, 0xc5, 0x8d, 0x24, 0x27, 0x24, 0xc6, 0xc5, 0x06, 0x91,
+	0x85, 0xda, 0x0f, 0xe5, 0x19, 0xd9, 0x70, 0x31, 0x3b, 0x16, 0x64, 0x0a, 0x99, 0x72, 0x71, 0x41,
+	0x54, 0x83, 0x04, 0x85, 0x84, 0x50, 0x6c, 0x02, 0x7b, 0x42, 0x4a, 0x18, 0x8b, 0xed, 0x4e, 0x02,
+	0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x8c, 0xc7, 0x72,
+	0x0c, 0x49, 0x6c, 0xe0, 0x80, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x5e, 0xfb, 0x36, 0x39,
+	0x15, 0x01, 0x00, 0x00,
 }

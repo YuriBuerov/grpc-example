@@ -19,7 +19,7 @@ func TestScanIPAddr(t *testing.T) {
 	c, conn := tClient(t, addr)
 	defer conn.Close()
 
-	req := &api.ScanIPRequest{IpAddr: "151.101.129.69"}
+	req := &api.ScanIPRequest{DomainName: "stackoverflow.com"}
 	resp, err := c.ScanIPAddr(context.Background(), req)
 	require.Nil(t, err)
 	require.NotNil(t, resp)
