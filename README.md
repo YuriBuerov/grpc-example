@@ -6,6 +6,6 @@ go get -u github.com/rancher/trash
 ```sh
 mkdir vendor && trash
 ```
-##Run Tests
+# Run Tests
 ```bash
 make test
