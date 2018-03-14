@@ -3,16 +3,21 @@ syntax = "proto3";
 package api;
 
 service Api {
-    rpc ScanIPAddr (ScanIPRequest) returns (ScanIPResponse);
+    rpc GetCCurrencies (GetCCurrenciesRequest) returns (GetCCurrenciesResponse);
 }
 
-message ScanIPRequest {
-    string domainName = 1;
+message GetCCurrenciesRequest {
+    uint32 limit = 1;
 }
 
-message ScanIPResponse {
-    message ScanIPEntry {
-        string ipAddr = 1;
+message GetCCurrenciesResponse {
+    message CCurrency {
+        string id = 1;
+        string name = 2;
+        string symbol = 3;
+        uint32 rank = 4;
+        double priceUSD = 5; // just to keep it simple
+        double dailyChange = 6;
     }
-    repeated ScanIPEntry ipAddresses = 1;
+    repeated CCurrency currencies = 1;
 }

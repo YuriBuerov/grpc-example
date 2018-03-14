@@ -1,10 +1,11 @@
 package server
 
 import (
+	"net/http"
 	"runtime/debug"
 
 	"github.com/YuriBuerov/grpc-example/api"
-	"github.com/YuriBuerov/grpc-example/pkg/scanner"
+	"github.com/YuriBuerov/grpc-example/pkg/coinmarketcap"
 	"github.com/go-kit/kit/log"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -14,7 +15,7 @@ import (
 )
 
 type server struct {
-	*scanner.IPScanner
+	*coinmarketcap.CTicker
 }
 
 func NewGRPCServer(logger log.Logger) (*grpc.Server, error) {
@@ -25,7 +26,7 @@ func NewGRPCServer(logger log.Logger) (*grpc.Server, error) {
 		}),
 	}
 
-	ipScanner := scanner.NewIPScanner(logger)
+	cTicker := coinmarketcap.NewCTicker(logger, http.DefaultClient)
 
 	s := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
@@ -34,7 +35,7 @@ func NewGRPCServer(logger log.Logger) (*grpc.Server, error) {
 	)
 
 	api.RegisterApiServer(s, &server{
-		IPScanner: ipScanner,
+		CTicker: cTicker,
 	})
 
 	return s, nil

@@ -13,7 +13,7 @@ import (
 
 func main() {
 	port := flag.String("port", "50051", "server port")
-	domainName := flag.String("domain-name", "stackoverflow.com", "domain name")
+	limit := flag.Int("limit", 10, "limit")
 	flag.Parse()
 	if port == nil {
 		log.Fatal("port is required")
@@ -29,8 +29,12 @@ func main() {
 	client := api.NewApiClient(conn)
 	defer conn.Close()
 
-	req := &api.ScanIPRequest{DomainName: *domainName}
-	resp, err := client.ScanIPAddr(context.Background(), req)
+	req := &api.GetCCurrenciesRequest{Limit: uint32(*limit)}
+	resp, err := client.GetCCurrencies(context.Background(), req)
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 
-	log.Printf("Response---> %v\n", resp.IpAddresses)
+	log.Printf("Response---> %v\n", resp.Currencies)
 }

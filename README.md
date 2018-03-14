@@ -27,5 +27,5 @@ curl -L https://127.0.0.1:50051  -XGET
 
 * Client example
 ```bash
-go run ./cmd/testclient/main.go -port 50051 -domain-name stackoverflow.com
+go run ./cmd/testclient/main.go -port 50051 -limit 10
 ```

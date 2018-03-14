@@ -13,14 +13,15 @@ import (
 	"google.golang.org/grpc"
 )
 
-func TestScanIPAddr(t *testing.T) {
+func TestGetCCurrencies(t *testing.T) {
 	addr, cancel := tServer(t)
 	defer cancel()
 	c, conn := tClient(t, addr)
 	defer conn.Close()
 
-	req := &api.ScanIPRequest{DomainName: "stackoverflow.com"}
-	resp, err := c.ScanIPAddr(context.Background(), req)
+	req := &api.GetCCurrenciesRequest{Limit: 3}
+	resp, err := c.GetCCurrencies(context.Background(), req)
+
 	require.Nil(t, err)
 	require.NotNil(t, resp)
 }
