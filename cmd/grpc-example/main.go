@@ -8,14 +8,17 @@ import (
 	"github.com/go-kit/kit/log"
 )
 
+// We don't have config in this example, so port defined as constant
 const (
 	port = ":50051"
 )
 
 func main() {
+	// Initialize logger
 	logger := log.NewJSONLogger(log.NewSyncWriter(os.Stdout))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC, "caller", log.DefaultCaller, "version", "1.0")
 
+	// Recover from panic
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Log("error", "recover from panic", "cause", err)
@@ -23,6 +26,7 @@ func main() {
 		}
 	}()
 
+	// Initialize GRPC server
 	grpcServer, err := server.NewGRPCServer(logger)
 	if err != nil {
 		logger.Log("error", "failed to init grpc server", "cause", err)

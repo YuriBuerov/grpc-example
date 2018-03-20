@@ -14,11 +14,15 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Here all handlers have to be stored
+// Each handler have to implement related handle func, take a look on api.proto and api.pb.go
 type server struct {
 	*coinmarketcap.CTicker
 }
 
+// NewGRPCServer GRPC server initializer
 func NewGRPCServer(logger log.Logger) (*grpc.Server, error) {
+	// Use middleware to handle recover
 	opts := []grpc_recovery.Option{
 		grpc_recovery.WithRecoveryHandler(func(p interface{}) error {
 			logger.Log("error", "recovering from panic", "cause", p, "trace", string(debug.Stack()))
@@ -26,8 +30,10 @@ func NewGRPCServer(logger log.Logger) (*grpc.Server, error) {
 		}),
 	}
 
+	// Initialize handler
 	cTicker := coinmarketcap.NewCTicker(logger, http.DefaultClient)
 
+	// Initialize GRPC server and pass middleware opts
 	s := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
 			grpc_recovery.UnaryServerInterceptor(opts...),

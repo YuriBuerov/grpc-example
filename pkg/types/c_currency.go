@@ -4,6 +4,7 @@ import (
 	"github.com/YuriBuerov/grpc-example/api"
 )
 
+// CCurrency object represent crypto currency from coinmarketcap API response
 type CCurrency struct {
 	ID               string    `json:"id"`
 	Name             string    `json:"name"`
@@ -14,8 +15,10 @@ type CCurrency struct {
 	PercentChange24H float64   `json:"percent_change_24h,string"`
 }
 
+// CCurrencies set of CCurrency objects
 type CCurrencies []CCurrency
 
+// ToProtoCCurrency convert CCurrency to proto currency entry, take a look on api.proto
 func ToProtoCCurrency(c *CCurrency) *api.GetCCurrenciesResponse_CCurrency {
 	return &api.GetCCurrenciesResponse_CCurrency{
 		Id:          c.ID,

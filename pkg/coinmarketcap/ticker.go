@@ -15,12 +15,14 @@ import (
 
 const baseURL = "https://api.coinmarketcap.com/v1/ticker/"
 
+// CTicker handler
 type CTicker struct {
 	logger  log.Logger
 	client  *http.Client
 	baseURL string
 }
 
+// NEwCTicker handler initializer
 func NewCTicker(logger log.Logger, c *http.Client) *CTicker {
 	return &CTicker{
 		logger:  logger,
@@ -29,7 +31,9 @@ func NewCTicker(logger log.Logger, c *http.Client) *CTicker {
 	}
 }
 
+// GetCCurrencies handle func, which CTicker handler have to implement. (take a look on api.proto and api.pb.go)
 func (t *CTicker) GetCCurrencies(ctx context.Context, in *api.GetCCurrenciesRequest) (*api.GetCCurrenciesResponse, error) {
+	// Just simple functionality to show GPRC handler example
 	var resp api.GetCCurrenciesResponse
 
 	url := fmt.Sprintf("%s?limit=%d", t.baseURL, in.Limit)

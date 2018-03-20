@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// Minimalistic example of GRPC client
 func main() {
 	port := flag.String("port", "50051", "server port")
 	limit := flag.Int("limit", 10, "limit")
