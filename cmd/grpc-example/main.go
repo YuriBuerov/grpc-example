@@ -55,7 +55,7 @@ func main() {
 }
 
 func catchStopSignal(done <-chan struct{}, cancel context.CancelFunc, server *grpc.Server) {
-	var stop = make(chan os.Signal)
+	var stop = make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM)
 
 	go func() {
