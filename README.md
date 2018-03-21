@@ -1,10 +1,10 @@
 # grpc-example
-1. Install `trash` tool for dependency management:
+1. Install `dep` tool for dependency management:
 ```sh
-go get -u github.com/rancher/trash
+brew install dep
 ```
 ```sh
-mkdir vendor && trash
+dep ensure
 ```
 # Run Tests
 ```bash

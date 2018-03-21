@@ -22,7 +22,7 @@ type CTicker struct {
 	baseURL string
 }
 
-// NEwCTicker handler initializer
+// NewCTicker handler initializer
 func NewCTicker(logger log.Logger, c *http.Client) *CTicker {
 	return &CTicker{
 		logger:  logger,
