@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: grpc-example
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        grpc-example/app: grpc
+        grpc-example/tier: api
+    spec:
+      containers:
+        - name: api
+          image: yuribuerov/grpc-example:v1.0
+          ports:
+          - containerPort: 50051
+            name: grpc
+      imagePullSecrets:
+      - name: grpc-example
