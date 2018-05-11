@@ -1,0 +1,14 @@
+language: go
+go:
+  - 1.8
+  - 1.9
+  - 1.10
+env:
+  - CGO_ENABLED=0
+install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - dep ensure
+script:
+  - go test -cover ./cmd/... ./pkg/...
+  - go vet $(go list ./... | grep -v vendor)
+  - cd cmd/grpc-example && go build
