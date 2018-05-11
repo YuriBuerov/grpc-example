@@ -1,14 +1,24 @@
+sudo: required
+services:
+  - docker
 language: go
 go:
-  - "1.8"
-  - "1.9"
   - "1.10"
 env:
-  - CGO_ENABLED=0
+  global:
+    - CGO_ENABLED=0
+  matrix:
+    - SERVICE=grpc-example
 install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - dep ensure
 script:
   - go test -cover ./cmd/... ./pkg/...
   - go vet $(go list ./... | grep -v vendor)
-  - cd cmd/grpc-example && go build
+  - cd cmd/${SERVICE} && go build
+  - docker image build -t ${DOCKER_USERNAME}/${SERVICE}:${TRAVIS_BRANCH} .
+after_success:
+  - if [ -n "${TRAVIS_TAG}" ] ; then
+      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
+      docker push yuribuerov/$SERVICE:$TRAVIS_BRANCH;
+    fi

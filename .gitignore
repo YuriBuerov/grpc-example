@@ -4,3 +4,4 @@ docker-tmp/
 vendor/
 build/
 tmp/
+cmd/grpc-example/grpc-example

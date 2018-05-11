@@ -3,7 +3,7 @@ MAINTAINER Yuri Buerov <yuribuerov@gmail.com>
 
 RUN apk -U add ca-certificates
 
-COPY /build/grpc-example /
+COPY grpc-example /
 
 ENTRYPOINT ["/grpc-example"]
 CMD [""]
